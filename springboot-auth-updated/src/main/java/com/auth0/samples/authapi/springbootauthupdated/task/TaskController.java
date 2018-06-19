@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tasks")
@@ -34,7 +35,7 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public void editTask(@PathVariable long id, @RequestBody Task task) {
-        Task existingTask = taskRepository.findOne(id);
+        Task existingTask = taskRepository.findById(id).get();
         Assert.notNull(existingTask, "Task not found");
         existingTask.setDescription(task.getDescription());
         taskRepository.save(existingTask);
@@ -42,6 +43,7 @@ public class TaskController {
 
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable long id) {
-        taskRepository.delete(id);
+        Task taskToDel = taskRepository.findById(id).get();
+        taskRepository.delete(taskToDel);
     }
 }
